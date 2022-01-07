@@ -9,13 +9,18 @@ import re
 import soco
 import socket
 import time
-import urllib2
+import urllib.request
 import xml.etree.ElementTree as ElementTree
 
 
 def zp_request(zp_ip, request):
     url = 'http://%s:1400/%s' % (zp_ip, request)
-    return urllib2.urlopen(url, timeout=5).read()
+    try:
+        with urllib.request.urlopen(target_url) as f:
+            html = f.read().decode('utf-8')
+    except urllib.request.HTTPError as e:
+        raise(e)
+    return html
 
 
 def name(ip):
