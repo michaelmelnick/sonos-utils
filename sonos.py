@@ -3,7 +3,6 @@ import os
 import sys
 
 import argparse
-import commands
 import multiprocessing
 import numpy
 import re
@@ -171,14 +170,14 @@ def zp_print(zp, fmt, net_data, level):
     if zp.is_visible and level == 0:
         state = zp.get_current_transport_info()['current_transport_state']
 
-    print fmt % (
+    print(fmt % (
         padding + zp_name(zp),
         '%s (%s)' % (net_data[zp]['network'], net_data[zp]['channel']),
         state,
         net_data[zp]['rssi'],
         net_data[zp]['beacons'],
         net_data[zp]['drops'],
-        net_data[zp]['chsnk_score'])
+        net_data[zp]['chsnk_score']))
 
     if level == 0:
         for grouped_zp in sorted(zp.group, key=lambda x: zp_name(x)):
@@ -206,7 +205,7 @@ def map_network(zps, args):
     for (zp, nd) in zip(zps, p.map(get_network_data, zp_ips)):
         net_data[zp] = nd
 
-    print fmt % ('Sonos', 'Network', 'State', 'RSSI', 'B#', 'Drops', 'CHSNK')
+    print(fmt % ('Sonos', 'Network', 'State', 'RSSI', 'B#', 'Drops', 'CHSNK'))
     for zp in zps:
         if zp.is_coordinator:
             zp_print(zp, fmt, net_data, 0)
@@ -231,7 +230,7 @@ def wifi_status(zps, args):
 
     for zp in zps:
         current_ap = net_data[zp]['network']
-        print 'Sonos: %s (connected to %s)' % (zp_name(zp), current_ap)
+        print('Sonos: %s (connected to %s)' % (zp_name(zp), current_ap))
         sorted_by_rssi = sorted(
             [x for x in scan_data[zp] if 'rssi: ' in x],
             key=lambda l: int(re.search('rssi:\s*(\d+)', l).group(1)),
@@ -246,14 +245,14 @@ def wifi_status(zps, args):
                         mac = mac.lower()   # scan results have lower case MAC
                         line = line.replace(mac, '%20.20s' % name)
                     renamed.append(line)
-                print '\n'.join(renamed)
+                print('\n'.join(renamed))
 
                 best_ap = re.search('(\S+): ', renamed[0]).group(1)
                 if current_ap != best_ap:
-                    print '******** NOT OPTIMAL: change access point from [%s] to [%s]' % (
-                        current_ap, best_ap)
+                    print('******** NOT OPTIMAL: change access point from [%s] to [%s]' % (
+                        current_ap, best_ap))
 
-        print '\n'
+        print('\n')
 
 
 def wifi_blacklist(zps, args):
@@ -268,18 +267,18 @@ def wifi_blacklist(zps, args):
         scan_data[zp] = result
 
     for zp in zps:
-        print 'Sonos: %s' % zp_name(zp)
+        print('Sonos: %s' % zp_name(zp))
         for line in scan_data[zp]:
             for (mac, name) in rev_arp.iteritems():
                 mac = mac.lower()   # dmesg results have mac in lower case
                 line = line.replace(mac, '%20.20s' % name)
-            print line
-        print
+            print(line)
+        print()
 
 
 def reboot_network(zps, args):
-    print "REBOOTING THESE SONOS IN 5 SECONDS!\n\t%s\nHit ^C to abort" % \
-        "\n\t".join([zp_name(x) for x in zps])
+    print("REBOOTING THESE SONOS IN 5 SECONDS!\n\t%s\nHit ^C to abort" % \
+        "\n\t".join([zp_name(x) for x in zps]))
     time.sleep(5)
 
     for zp in zps:
@@ -303,7 +302,7 @@ def main(argv=None):
 
     zps = all_zps_sorted()
     if not zps:
-        print 'No Sonos devices detected'
+        print('No Sonos devices detected')
         sys.exit(1)
 
     cmd_exec = {
