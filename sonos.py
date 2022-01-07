@@ -289,9 +289,9 @@ def reboot_network(zps, args):
     for zp in zps:
         try:
             response = zp_request(zp.ip_address, 'reboot')
-            print response
+            print(response)
         except urllib2.URLError as e:
-            print e
+            print(e)
 
 
 def main(argv=None):
